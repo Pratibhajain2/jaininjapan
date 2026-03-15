@@ -42,45 +42,60 @@ Each object MUST have exactly these fields:
 
 Output ONLY the raw JSON array. No markdown, no backticks, no explanation. Start with [ end with ].`;
 
+// Models to try in order — first one that works wins
+const GEMINI_MODELS = [
+  "gemini-1.5-flash",
+  "gemini-1.5-flash-latest",
+  "gemini-1.5-flash-8b",
+  "gemini-2.0-flash",
+  "gemini-pro",
+];
+
+async function callGemini(city) {
+  let lastError = null;
+  for (const model of GEMINI_MODELS) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `${PROMPT}\n\nList all Jain-friendly and pure vegetarian Indian restaurants in ${city}, Japan. Be thorough. Output only the JSON array.` }] }],
+          generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
+        }),
+      });
+      const data = await response.json();
+      // Check for error
+      if (data.error) {
+        console.log(`Model ${model} failed: ${data.error.message}`);
+        lastError = data.error.message;
+        continue; // try next model
+      }
+      const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if (!raw) { lastError = "Empty response"; continue; }
+      return raw; // success
+    } catch (err) {
+      console.log(`Model ${model} threw: ${err.message}`);
+      lastError = err.message;
+    }
+  }
+  throw new Error(`All Gemini models failed. Last error: ${lastError}`);
+}
+
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-// API proxy endpoint — uses Google Gemini (free, no card required)
+// API endpoint
 app.post("/api/restaurants", async (req, res) => {
   const { city } = req.body;
   if (!city) return res.status(400).json({ error: "city is required" });
   if (!GEMINI_API_KEY) return res.status(500).json({ error: "GEMINI_API_KEY not set on server" });
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `${PROMPT}\n\nList all Jain-friendly and pure vegetarian Indian restaurants in ${city}, Japan. Be thorough. Output only the JSON array.`
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 8192,
-        }
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      return res.status(response.status).json({ error: err.error?.message || `Gemini API error ${response.status}` });
-    }
-
-    const data = await response.json();
-    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const raw = await callGemini(city);
     const clean = raw.replace(/```json|```/gi, "").trim();
     const s = clean.indexOf("["), e = clean.lastIndexOf("]");
     if (s === -1 || e <= s) return res.status(500).json({ error: "Could not parse restaurant data" });
-
     const parsed = JSON.parse(clean.slice(s, e + 1));
     res.json({ restaurants: parsed });
   } catch (err) {
@@ -89,7 +104,7 @@ app.post("/api/restaurants", async (req, res) => {
   }
 });
 
-// Catch-all → serve frontend
+// Serve frontend
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
 app.listen(PORT, () => console.log(`JainJapan running on port ${PORT}`));
