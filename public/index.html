@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JainJapan — Jain & Pure Veg Restaurant Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#f6f0e8;color:#2d1f0e;min-height:100vh;overflow-x:hidden}
+a{text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+
+@keyframes shimmer{to{background-position:-200% 0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes dp{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+
+/* NAV */
+#nav{position:sticky;top:0;z-index:200;background:#2d1f0e;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;box-shadow:0 2px 14px rgba(0,0,0,.3)}
+#nav-logo{background:none;border:none;font-family:Georgia,serif;font-size:18px;font-weight:900;color:#e8d5b0;display:flex;align-items:center;gap:7px}
+#nav-phrases{background:none;border:1px solid rgba(197,169,122,.4);border-radius:8px;padding:6px 13px;color:#c5a97a;font-size:12.5px}
+#nav-logo:hover,#nav-phrases:hover{opacity:.85}
+
+.view{display:none}.view.active{display:block}
+
+/* HERO */
+#hero{background:linear-gradient(148deg,#2d1f0e 0%,#3d2610 50%,#6b4226 100%);padding:52px 20px 44px;text-align:center;position:relative;overflow:hidden}
+#hero::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,transparent 0,transparent 20px,rgba(255,255,255,.015) 20px,rgba(255,255,255,.015) 21px)}
+.hero-inner{position:relative;z-index:1;max-width:560px;margin:0 auto}
+.hero-eye{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#c5a97a;margin-bottom:12px}
+.hero-title{font-family:Georgia,serif;font-size:clamp(2rem,6vw,3.2rem);font-weight:900;color:#e8d5b0;line-height:1.07;margin-bottom:8px}
+.hero-sub{font-family:Georgia,serif;font-size:clamp(1rem,2.5vw,1.3rem);font-style:italic;color:#c5a97a;margin-bottom:14px}
+.hero-desc{font-size:14px;color:rgba(232,213,176,.8);line-height:1.75;max-width:440px;margin:0 auto 24px}
+.hero-phrase-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 24px;background:rgba(197,169,122,.15);border:1.5px solid #c5a97a;border-radius:10px;color:#e8d5b0;font-size:13.5px;transition:all .2s}
+.hero-phrase-btn:hover{background:rgba(197,169,122,.28);transform:translateY(-1px)}
+
+/* LEGEND */
+#legend{max-width:880px;margin:0 auto;padding:18px 20px 0}
+.legend-box{background:#fff;border:1.5px solid #ede5d8;border-radius:12px;padding:14px 18px}
+.legend-lbl{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#9c8272;margin-bottom:10px}
+.legend-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#7a6a5a}
+
+/* CITY GRID */
+#city-grid{max-width:880px;margin:0 auto;padding:18px 20px 56px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:13px}
+.city-card{background:#fff;border:1.5px solid #ede5d8;border-radius:14px;padding:19px;text-align:left;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);transition:all .18s}
+.city-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(45,31,14,.16);border-color:#c5a97a}
+.city-badge{position:absolute;top:0;right:0;background:#c5a97a;color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-bottom-left-radius:8px;letter-spacing:.1em;text-transform:uppercase}
+.city-emoji{font-size:28px;margin-bottom:9px;display:block}
+.city-name{font-family:Georgia,serif;font-size:18px;font-weight:700;color:#2d1f0e;margin-bottom:4px}
+.city-note{font-size:11.5px;color:#9c8272;font-style:italic;line-height:1.5}
+.city-cta{margin-top:12px;font-size:12px;color:#5c3a1e;font-weight:600}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;white-space:nowrap}
+.tag-jain    {background:#d4f4e3;color:#1a6b3c}
+.tag-no-og   {background:#fff3cd;color:#7b4f00}
+.tag-pure-veg{background:#d6eaf8;color:#1a5276}
+.tag-vegan   {background:#f0e6ff;color:#4a235a}
+
+/* PRICE */
+.price{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px}
+.price-budget {color:#2e7d32;background:#f0fdf4;border:1px solid #2e7d3233}
+.price-mid    {color:#e65100;background:#fff8f0;border:1px solid #e6510033}
+.price-upscale{color:#6a1b9a;background:#faf0ff;border:1px solid #6a1b9a33}
+
+/* CITY HEADER */
+#city-header{background:linear-gradient(135deg,#2d1f0e,#4a2810);padding:24px 20px 20px}
+.city-hdr-inner{max-width:880px;margin:0 auto;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.back-btn{background:rgba(255,255,255,.1);border:1px solid rgba(197,169,122,.4);border-radius:8px;padding:8px 14px;color:#e8d5b0;font-size:13px;flex-shrink:0;transition:background .15s}
+.back-btn:hover{background:rgba(255,255,255,.2)}
+.back-btn-lt{background:#ede5d8;border:1px solid #d9cbb8;color:#5c3a1e}
+.back-btn-lt:hover{background:#d9cbb8}
+.city-hdr-eye{font-size:9.5px;letter-spacing:.25em;text-transform:uppercase;color:#c5a97a;margin-bottom:4px}
+.city-hdr-name{font-family:Georgia,serif;font-size:clamp(1.5rem,4vw,2.1rem);font-weight:900;color:#e8d5b0;margin-bottom:3px}
+.city-hdr-note{font-size:12.5px;color:#c5a97a;font-style:italic}
+
+/* FILTER BAR */
+#filter-bar{max-width:880px;margin:0 auto;padding:14px 20px 4px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.filter-lbl{font-size:11px;color:#9c8272;margin-right:4px}
+.filter-btn{padding:5px 13px;border-radius:20px;border:1.5px solid #d9cbb8;background:#fff;font-size:11.5px;color:#7a6a5a;transition:all .15s}
+.filter-btn.on-jain    {border-color:#1a6b3c;background:#d4f4e3;color:#1a6b3c;font-weight:700}
+.filter-btn.on-no-og   {border-color:#7b4f00;background:#fff3cd;color:#7b4f00;font-weight:700}
+.filter-btn.on-pure-veg{border-color:#1a5276;background:#d6eaf8;color:#1a5276;font-weight:700}
+.filter-btn.on-vegan   {border-color:#4a235a;background:#f0e6ff;color:#4a235a;font-weight:700}
+
+/* STATUS */
+#load-status{max-width:880px;margin:6px auto 0;padding:0 20px;font-size:12px;color:#9c8272;font-style:italic;min-height:22px;display:flex;align-items:center;gap:8px}
+.dots span{width:5px;height:5px;border-radius:50%;background:#c5a97a;display:inline-block;margin:0 2px;animation:dp 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+
+/* REST GRID */
+#rest-grid-wrap{max-width:880px;margin:0 auto;padding:12px 20px 56px}
+#rest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px}
+
+/* SKELETON */
+.skel{background:#fff;border-radius:14px;overflow:hidden;border:1.5px solid #ede5d8}
+.skel-img{height:158px;background:linear-gradient(90deg,#ede5d8 25%,#f6f0e8 50%,#ede5d8 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+.skel-body{padding:14px}
+.skel-line{height:10px;border-radius:5px;background:linear-gradient(90deg,#ede5d8 25%,#f6f0e8 50%,#ede5d8 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:9px}
+.w40{width:40%}.w60{width:60%}.w80{width:80%}
+
+/* REST CARD */
+.rest-card{background:#fff;border:1.5px solid #ede5d8;border-radius:14px;overflow:hidden;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:all .18s;animation:fadeUp .35s ease forwards;opacity:0}
+.rest-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(45,31,14,.16);border-color:#c5a97a}
+.card-thumb{width:100%;height:158px;display:flex;align-items:center;justify-content:center;font-size:50px}
+.card-body{padding:13px 15px 15px}
+.card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.card-name{font-family:Georgia,serif;font-size:16px;font-weight:700;color:#2d1f0e;margin-bottom:3px;line-height:1.25}
+.card-loc{font-size:11.5px;color:#9c8272;margin-bottom:5px}
+.card-station{font-size:11.5px;color:#9c8272;margin-bottom:6px}
+.card-note{font-size:13px;font-style:italic;color:#5c4733;line-height:1.55;margin-bottom:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;justify-content:space-between;align-items:center}
+.card-tap{font-size:11px;color:#5c3a1e;font-weight:600;opacity:.7}
+
+/* ERROR */
+.err-box{background:#fff5f5;border:1.5px solid #fcc;border-radius:12px;padding:28px;text-align:center;margin:16px 0}
+.err-msg{color:#c0392b;font-size:13.5px;margin:12px 0 16px;line-height:1.6}
+.retry-btn{padding:9px 24px;background:#5c3a1e;color:#e8d5b0;border:none;border-radius:8px;font-size:13px}
+.retry-btn:hover{background:#2d1f0e}
+.disclaimer{background:#fffbf5;border:1px solid #e8d8c0;border-radius:10px;padding:13px 16px;font-size:12px;color:#7a6a5a;line-height:1.7;margin-top:8px}
+
+/* MODAL */
+#modal-overlay{position:fixed;inset:0;background:rgba(20,12,5,.65);z-index:500;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+#modal-overlay.open{display:flex}
+#modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:620px;max-height:92vh;overflow-y:auto;animation:slideUp .28s cubic-bezier(.4,0,.2,1)}
+.modal-thumb{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:72px}
+.modal-close-bar{position:sticky;top:0;z-index:10;display:flex;justify-content:flex-end;padding:10px 14px 0;background:#fff}
+.modal-close-btn{background:#ede5d8;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;color:#5c3a1e;display:flex;align-items:center;justify-content:center}
+.modal-close-btn:hover{background:#d9cbb8}
+#modal-body{padding:4px 22px 32px}
+.modal-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.modal-name{font-family:Georgia,serif;font-size:22px;font-weight:900;color:#2d1f0e;margin-bottom:5px;line-height:1.2}
+.modal-loc{font-size:13px;color:#7a6a5a;margin-bottom:16px;line-height:1.7}
+.modal-loc strong{color:#5c3a1e}
+.modal-sec{margin-bottom:18px}
+.modal-sec-title{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#9c8272;font-weight:600;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #ede5d8}
+.modal-note{font-family:Georgia,serif;font-size:15px;font-style:italic;color:#5c4733;line-height:1.7}
+.modal-menu-item{padding:6px 10px;background:#f6f0e8;border-radius:7px;font-size:13.5px;margin-bottom:5px}
+.modal-opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt-box{padding:8px 10px;border-radius:8px;font-size:12px}
+.opt-yes{background:#d4f4e3;color:#1a6b3c}
+.opt-no {background:#fef2f2;color:#c0392b}
+.opt-ask{background:#fff3cd;color:#7b4f00}
+.opt-lbl{font-weight:700;font-size:10px;display:block;margin-bottom:2px}
+.modal-info-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.call-chip{font-size:11px;font-weight:700;color:#c0392b;background:#fef2f2;border:1px solid #fcc;border-radius:6px;padding:3px 9px}
+.modal-detail{font-size:13px;color:#5c4733;margin-bottom:5px}
+.maps-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#5c3a1e,#8b5e3c);color:#e8d5b0;border-radius:11px;font-size:14px;font-weight:700;margin-top:6px;box-shadow:0 4px 16px rgba(92,58,30,.28);transition:all .15s}
+.maps-btn:hover{transform:translateY(-1px);box-shadow:0 7px 24px rgba(92,58,30,.38)}
+.modal-disc{margin-top:14px;background:#fffbf5;border:1px solid #e8d8c0;border-radius:9px;padding:11px 14px;font-size:11.5px;color:#7a6a5a;line-height:1.65}
+
+/* PHRASES */
+#phrases-inner{max-width:680px;margin:0 auto;padding:0 20px 56px}
+.phrase-hdr{padding:24px 0 18px;display:flex;align-items:flex-start;gap:14px}
+.phrase-eye{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:#c5a97a;margin-bottom:4px}
+.phrase-h{font-family:Georgia,serif;font-size:clamp(1.4rem,4vw,1.9rem);font-weight:900;color:#2d1f0e;margin-bottom:3px}
+.phrase-sub{font-size:12.5px;color:#7a6a5a;font-style:italic}
+.phrase-tip{background:#fffbf5;border:1px solid #e8d8c0;border-radius:9px;padding:11px 15px;margin-bottom:20px;font-size:12.5px;color:#7a6a5a;line-height:1.65}
+.pcard{background:#fff;border:1.5px solid #ede5d8;border-radius:13px;overflow:hidden;margin-bottom:11px;cursor:pointer;transition:box-shadow .18s}
+.pcard:hover{box-shadow:0 5px 20px rgba(0,0,0,.08)}
+.pcard.priority{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#1a6b3c}
+.pcard-head{padding:13px 17px;display:flex;justify-content:space-between;align-items:center}
+.pcard-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pcard-badge{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:#d4f4e3;color:#1a6b3c;padding:2px 9px;border-radius:10px}
+.pcard-cat{font-weight:600;font-size:13.5px;color:#2d1f0e}
+.pcard-arrow{color:#9c8272;font-size:17px;transition:transform .2s;flex-shrink:0}
+.pcard.open .pcard-arrow{transform:rotate(90deg)}
+.pcard-preview{padding:0 17px 12px;font-size:12.5px;color:#7a6a5a;font-style:italic}
+.pcard-body{border-top:1px solid #ede5d8;padding:16px;display:none;flex-direction:column;gap:12px}
+.pcard.open .pcard-body{display:flex}
+.pcard-jp{background:#2d1f0e;border-radius:10px;padding:16px 18px}
+.pcard-jp-lbl{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#c5a97a;margin-bottom:8px}
+.pcard-jp-text{font-size:16px;color:#e8d5b0;line-height:2;white-space:pre-line}
+.pcard-copy-row{display:flex;justify-content:flex-end;margin-top:9px}
+.copy-btn{padding:4px 12px;border-radius:6px;border:1px solid #c5a97a;background:transparent;color:#c5a97a;font-size:11px;transition:all .15s}
+.copy-btn:hover{background:#c5a97a;color:#2d1f0e}
+.copy-btn.done{background:#5c3a1e;color:#e8d5b0;border-color:#5c3a1e}
+.pcard-box{background:#fafaf8;border-radius:9px;padding:12px 15px;border:1px solid #ede5d8}
+.pcard-box.eng{background:#f5f0eb}
+.pcard-box-lbl{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#9c8272;margin-bottom:6px}
+.pcard-romaji{font-family:Georgia,serif;font-size:13.5px;font-style:italic;color:#5c3a1e;line-height:1.75}
+.pcard-eng{font-size:13px;color:#3d2710;line-height:1.65}
+
+#footer{background:#2d1f0e;padding:20px;text-align:center}
+.footer-warn{color:#c5a97a;font-size:13px;font-weight:600;margin-bottom:4px}
+.footer-txt{color:#7a6a5a;font-size:11.5px;line-height:1.75}
+
+@media(max-width:500px){
+  #city-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .city-card{padding:13px}.city-name{font-size:15px}
+  #rest-grid{grid-template-columns:1fr}
+  .modal-opts-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <button id="nav-logo" onclick="showView('home')">🌿 JainJapan</button>
+  <button id="nav-phrases" onclick="showView('phrases')">🗣️ Phrase Cards</button>
+</nav>
+
+<div id="view-home" class="view active">
+  <div id="hero">
+    <div class="hero-inner">
+      <div class="hero-eye">Jai Jinendra · Japan Travel Guide</div>
+      <h1 class="hero-title">Jain &amp; Pure Veg<br/>India in Japan</h1>
+      <p class="hero-sub">Live restaurant discovery for Jain travellers</p>
+      <p class="hero-desc">Select a city — AI instantly finds Jain-friendly, no-onion/garlic, pure vegetarian &amp; vegan Indian restaurants across Japan.</p>
+      <button class="hero-phrase-btn" onclick="showView('phrases')">🗣️ Jain Phrase Cards</button>
+    </div>
+  </div>
+  <div id="legend">
+    <div class="legend-box">
+      <div class="legend-lbl">Category Guide</div>
+      <div class="legend-row">
+        <div class="legend-item"><span class="tag tag-jain">🟢 Jain Menu</span> — Explicit Jain meal confirmed</div>
+        <div class="legend-item"><span class="tag tag-no-og">🧅 No Onion/Garlic</span> — No alliums used</div>
+        <div class="legend-item"><span class="tag tag-pure-veg">🌿 Pure Veg Indian</span> — 100% vegetarian Indian</div>
+        <div class="legend-item"><span class="tag tag-vegan">🌱 Vegan Options</span> — Full vegan menu</div>
+      </div>
+    </div>
+  </div>
+  <div id="city-grid"></div>
+</div>
+
+<div id="view-city" class="view">
+  <div id="city-header">
+    <div class="city-hdr-inner">
+      <button class="back-btn" onclick="showView('home')">← All Cities</button>
+      <div>
+        <div class="city-hdr-eye">City Guide</div>
+        <div id="city-hdr-name" class="city-hdr-name"></div>
+        <div id="city-hdr-note" class="city-hdr-note"></div>
+      </div>
+    </div>
+  </div>
+  <div id="filter-bar">
+    <span class="filter-lbl">Filter:</span>
+    <button class="filter-btn" data-tag="jain"     onclick="toggleFilter('jain')">🟢 Jain Menu</button>
+    <button class="filter-btn" data-tag="no-og"    onclick="toggleFilter('no-og')">🧅 No Onion/Garlic</button>
+    <button class="filter-btn" data-tag="pure-veg" onclick="toggleFilter('pure-veg')">🌿 Pure Veg Indian</button>
+    <button class="filter-btn" data-tag="vegan"    onclick="toggleFilter('vegan')">🌱 Vegan</button>
+  </div>
+  <div id="load-status"></div>
+  <div id="rest-grid-wrap">
+    <div id="rest-grid"></div>
+    <div id="rest-extra"></div>
+  </div>
+</div>
+
+<div id="view-phrases" class="view">
+  <div id="phrases-inner">
+    <div class="phrase-hdr">
+      <button class="back-btn back-btn-lt" onclick="showView('home')">← Back</button>
+      <div>
+        <div class="phrase-eye">Jain Traveller Toolkit</div>
+        <h2 class="phrase-h">🗣️ Jain Phrase Cards</h2>
+        <p class="phrase-sub">Show these to restaurant staff — tap to expand</p>
+      </div>
+    </div>
+    <div class="phrase-tip">💡 Screenshot expanded cards to show staff offline. Start with <strong style="color:#1a6b3c">⭐ Core Jain Request</strong>. Tap "Copy" to paste into messaging apps.</div>
+    <div id="phrases-list"></div>
+  </div>
+</div>
+
+<div id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div id="modal">
+    <div id="modal-thumb-wrap"></div>
+    <div class="modal-close-bar"><button class="modal-close-btn" onclick="closeModal()">✕</button></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="footer">
+  <div class="footer-warn">⚠️ Always verify before visiting</div>
+  <div class="footer-txt">Data sourced via AI — menus &amp; Jain policies change.<br/>Always call ahead. Show Phrase Cards to staff on arrival.<br/><span style="color:#5a4a3a">Jai Jinendra · Built for Jain travellers in Japan</span></div>
+</div>
+
+<script>
+const CITIES=[
+  {name:"Tokyo",    emoji:"🗼",rank:1,note:"Largest Indian community in Japan"},
+  {name:"Kyoto",    emoji:"⛩️",rank:2,note:"Temple city — Shojin Ryori & ISKCON"},
+  {name:"Osaka",    emoji:"🏯",rank:3,note:"Vibrant food scene, strong veg options"},
+  {name:"Hiroshima",emoji:"🕊️",rank:4,note:"Growing Indian restaurant scene"},
+  {name:"Nara",     emoji:"🦌",rank:5,note:"Day trip city — limited but worth checking"},
+  {name:"Yokohama", emoji:"⚓",rank:6,note:"Indian community hub near Tokyo"},
+  {name:"Nagoya",   emoji:"🏙️",rank:7,note:"Central Japan stop"},
+  {name:"Sapporo",  emoji:"❄️",rank:8,note:"Hokkaido's main city"},
+  {name:"Fukuoka",  emoji:"🌸",rank:9,note:"Kyushu gateway — growing scene"},
+  {name:"Koyasan",  emoji:"🕯️",rank:10,note:"Buddhist lodgings — Shojin Ryori"},
+];
+const TAG_META={
+  "jain":    {label:"🟢 Jain Menu",      cls:"tag-jain",    fcls:"on-jain"},
+  "no-og":   {label:"🧅 No Onion/Garlic",cls:"tag-no-og",   fcls:"on-no-og"},
+  "pure-veg":{label:"🌿 Pure Veg Indian",cls:"tag-pure-veg",fcls:"on-pure-veg"},
+  "vegan":   {label:"🌱 Vegan Options",  cls:"tag-vegan",   fcls:"on-vegan"},
+};
+const THUMB_BG={
+  "jain":"linear-gradient(135deg,#1a4d2e,#2d7a4f)",
+  "no-og":"linear-gradient(135deg,#5d3a00,#8b5e3c)",
+  "pure-veg":"linear-gradient(135deg,#0f3460,#1a5276)",
+  "vegan":"linear-gradient(135deg,#2e0f3e,#4a235a)",
+  "default":"linear-gradient(135deg,#3d2610,#6b4226)",
+};
+const THUMB_EMOJI={"jain":"🍛","no-og":"🥘","pure-veg":"🌿","vegan":"🌱","default":"🍽️"};
+const PRICE_LABELS={budget:"¥ Budget",mid:"¥¥ Mid-range",upscale:"¥¥¥ Fine"};
+const PRICE_CLS={budget:"price-budget",mid:"price-mid",upscale:"price-upscale"};
+const PHRASES=[
+  {cat:"Core Jain Request",priority:true,
+   jp:"私はジャイナ教徒です。\n玉ねぎ、にんにく、根菜（じゃがいも・にんじん・大根・ごぼう）、きのこ、お酒、魚のだしは食べられません。\nこれらを使わずに作っていただけますか？",
+   rm:"Watashi wa Jaina-kyōto desu. Tamanegi, ninniku, konsai (jagaimo, ninjin, daikon, gobō), kinoko, osake, sakana no dashi wa taberaremasen. Kore-ra wo tsukawazu ni tsukutte itadakemasu ka?",
+   en:"I am Jain. I cannot eat onion, garlic, root vegetables, mushrooms, alcohol, or fish stock. Could you prepare this without these?"},
+  {cat:"No Onion & Garlic",jp:"玉ねぎとにんにくを抜きにしてください。",rm:"Tamanegi to ninniku wo nuki ni shite kudasai.",en:"Please make it without onion and garlic."},
+  {cat:"No Meat or Fish",jp:"肉も魚も食べません。かつおだし・魚のだしも使わないでください。",rm:"Niku mo sakana mo tabemasen. Katsuo-dashi mo tsukawanaide kudasai.",en:"I don't eat meat or fish, including fish stock/dashi."},
+  {cat:"No Root Vegetables",jp:"根菜類（じゃがいも・にんじん・大根・ごぼう）も食べません。",rm:"Konsairui mo tabemasen.",en:"I also don't eat root vegetables: potato, carrot, radish, burdock."},
+  {cat:"Please check ingredients",jp:"原材料に玉ねぎ・にんにく・肉・魚が含まれていないか確認していただけますか？",rm:"Genzairyō ni tamanegi, ninniku, niku, sakana ga fukumarete inai ka kakunin shite itadakemasu ka?",en:"Could you check if ingredients contain onion, garlic, meat, or fish?"},
+  {cat:"Is this fully vegan?",jp:"これは完全なヴィーガン料理ですか？卵も乳製品も入っていませんか？",rm:"Kore wa kanzen na vīgan ryōri desu ka?",en:"Is this dish fully vegan? No eggs or dairy?"},
+  {cat:"Thank you",jp:"ご配慮いただきありがとうございます。とても助かります。",rm:"Go-hairyo itadaki arigatō gozaimasu. Totemo tasukarimasu.",en:"Thank you very much for your consideration."},
+];
+
+let currentCity=null,allRests=[],activeFilters=[];
+
+function showView(n){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderCityGrid(){
+  document.getElementById('city-grid').innerHTML=CITIES.map(c=>`
+    <button class="city-card" onclick='openCity(${JSON.stringify(c)})'>
+      ${c.rank<=3?'<div class="city-badge">Top Tourist</div>':''}
+      <span class="city-emoji">${c.emoji}</span>
+      <div class="city-name">${c.name}</div>
+      <div class="city-note">${c.note}</div>
+      <div class="city-cta">See Jain restaurants →</div>
+    </button>`).join('');
+}
+
+function openCity(city){
+  currentCity=city;allRests=[];activeFilters=[];
+  document.querySelectorAll('.filter-btn').forEach(b=>b.className='filter-btn');
+  document.getElementById('city-hdr-name').textContent=city.emoji+' '+city.name;
+  document.getElementById('city-hdr-note').textContent=city.note;
+  showView('city');
+  renderSkeletons();
+  fetchRestaurants();
+}
+
+function renderSkeletons(){
+  document.getElementById('rest-grid').innerHTML=Array(6).fill(0).map(()=>`
+    <div class="skel"><div class="skel-img"></div>
+    <div class="skel-body"><div class="skel-line w60"></div><div class="skel-line w80"></div><div class="skel-line w40"></div></div></div>`).join('');
+  document.getElementById('rest-extra').innerHTML='';
+}
+
+function setStatus(msg,loading=false){
+  const el=document.getElementById('load-status');
+  if(!msg){el.innerHTML='';return;}
+  el.innerHTML=loading?`<span class="dots"><span></span><span></span><span></span></span> ${msg}`:msg;
+}
+
+function tagsHtml(tags){
+  return(tags||[]).map(t=>TAG_META[t]?`<span class="tag ${TAG_META[t].cls}">${TAG_META[t].label}</span>`:'').join('');
+}
+
+function renderCards(){
+  const filtered=allRests.filter(r=>activeFilters.length===0||activeFilters.every(f=>(r.tags||[]).includes(f)));
+  setStatus('');
+  if(!filtered.length){
+    document.getElementById('rest-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:44px 20px;color:#9c8272;font-style:italic">No restaurants match this filter.</div>';
+    document.getElementById('rest-extra').innerHTML='';return;
+  }
+  document.getElementById('rest-grid').innerHTML=filtered.map((r,i)=>{
+    const pt=(r.tags||[])[0]||'default';
+    const price=r.price?`<span class="price ${PRICE_CLS[r.price]||'price-mid'}">${PRICE_LABELS[r.price]||r.price}</span>`:'';
+    return`<div class="rest-card" style="animation-delay:${i*.07}s" onclick="openModal(${i})">
+      <div class="card-thumb" style="background:${THUMB_BG[pt]||THUMB_BG.default}">${THUMB_EMOJI[pt]||'🍽️'}</div>
+      <div class="card-body">
+        <div class="card-tags">${tagsHtml(r.tags)}</div>
+        <div class="card-name">${r.name}</div>
+        <div class="card-loc">📌 ${r.area||currentCity.name}</div>
+        ${r.nearestStation?`<div class="card-station">🚉 ${r.nearestStation}</div>`:''}
+        <div class="card-note">${r.note||''}</div>
+        <div class="card-footer">${price}<span class="card-tap">Tap for details →</span></div>
+      </div></div>`;
+  }).join('');
+  document.getElementById('rest-extra').innerHTML=`<div class="disclaimer">⚠️ <strong>Always verify before visiting.</strong> Menus and Jain policies change — call ahead and show Phrase Cards to staff.</div>`;
+}
+
+function toggleFilter(tag){
+  const btn=document.querySelector(`.filter-btn[data-tag="${tag}"]`);
+  if(activeFilters.includes(tag)){activeFilters=activeFilters.filter(t=>t!==tag);btn.className='filter-btn';}
+  else{activeFilters.push(tag);btn.classList.add(TAG_META[tag].fcls);}
+  renderCards();
+}
+
+function showError(msg){
+  setStatus('');
+  document.getElementById('rest-grid').innerHTML='';
+  document.getElementById('rest-extra').innerHTML=`<div class="err-box"><div style="font-size:28px">⚠️</div><div class="err-msg">${msg}</div><button class="retry-btn" onclick="renderSkeletons();fetchRestaurants()">↻ Try Again</button></div>`;
+}
+
+function openModal(idx){
+  const filtered=allRests.filter(r=>activeFilters.length===0||activeFilters.every(f=>(r.tags||[]).includes(f)));
+  const r=filtered[idx];if(!r)return;
+  const pt=(r.tags||[])[0]||'default';
+  const opts=r.dietaryOptions||{};
+  const mapsUrl=r.mapsUrl||`https://www.google.com/maps/search/${encodeURIComponent(r.name+' '+currentCity.name+' Japan')}`;
+  const price=r.price?`<span class="price ${PRICE_CLS[r.price]||'price-mid'}">${PRICE_LABELS[r.price]||r.price}</span>`:'';
+  function opt(label,val){
+    const v=(val||'ask').toLowerCase();
+    const cls=v==='yes'?'opt-yes':v==='no'?'opt-no':'opt-ask';
+    const icon=v==='yes'?'✅':v==='no'?'❌':'⚠️';
+    const txt=v==='yes'?'Available':v==='no'?'Not available':'Ask staff';
+    return`<div class="opt-box ${cls}"><span class="opt-lbl">${label}</span>${icon} ${txt}</div>`;
+  }
+  const menuHtml=(r.menuHighlights&&r.menuHighlights.length)?`<div class="modal-sec"><div class="modal-sec-title">Menu Highlights</div>${r.menuHighlights.map(m=>`<div class="modal-menu-item">🍽️ ${m}</div>`).join('')}</div>`:'';
+  document.getElementById('modal-thumb-wrap').innerHTML=`<div class="modal-thumb" style="background:${THUMB_BG[pt]||THUMB_BG.default}">${THUMB_EMOJI[pt]||'🍽️'}</div>`;
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-tags">${tagsHtml(r.tags)}</div>
+    <div class="modal-name">${r.name}</div>
+    <div class="modal-loc">📌 <strong>${r.area||currentCity.name}</strong>${r.address?', '+r.address:''}<br/>
+      ${currentCity.name}, Japan${r.nearestStation?'<br/>🚉 Nearest: '+r.nearestStation:''}</div>
+    <div class="modal-sec"><div class="modal-sec-title">About</div><div class="modal-note">${r.note||''}</div></div>
+    ${menuHtml}
+    <div class="modal-sec"><div class="modal-sec-title">Dietary Options</div>
+      <div class="modal-opts-grid">
+        ${opt('Jain Meal',opts.jain)}${opt('No Onion/Garlic',opts.noOnionGarlic)}
+        ${opt('Pure Veg',opts.pureVeg)}${opt('Vegan',opts.vegan)}
+        ${opt('Dairy-free',opts.dairyFree)}${opt('Gluten-free',opts.glutenFree)}
+      </div></div>
+    <div class="modal-sec"><div class="modal-sec-title">Practical Info</div>
+      <div class="modal-info-row">${price}${r.callAhead?'<span class="call-chip">📞 Call ahead</span>':''}</div>
+      ${r.hours?`<div class="modal-detail">🕐 ${r.hours}</div>`:''}
+      ${r.phone?`<div class="modal-detail">📞 ${r.phone}</div>`:''}
+      ${r.website?`<div class="modal-detail"><a href="${r.website}" target="_blank" rel="noopener" style="color:#1a5276">🌐 Visit website</a></div>`:''}</div>
+    <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="maps-btn">🗺️ Open in Google Maps</a>
+    <div class="modal-disc">⚠️ Always call ahead to confirm Jain/veg policies. Show <strong>Phrase Cards</strong> to staff on arrival.</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function handleOverlayClick(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
+
+// ── THIS IS THE KEY DIFFERENCE: calls /api/restaurants on the SAME server ──
+// No CORS. No API key in the browser. Always works.
+async function fetchRestaurants(){
+  const city=currentCity;
+  try{
+    setStatus('Searching for Jain restaurants in '+city.name+'…',true);
+    const res=await fetch('/api/restaurants',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({city:city.name})
+    });
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Server error');
+    if(!data.restaurants||!data.restaurants.length)throw new Error('No restaurants found. Please try again.');
+    allRests=data.restaurants.map(r=>({
+      ...r,
+      tags:Array.isArray(r.tags)?r.tags.filter(t=>TAG_META[t]):[],
+      mapsUrl:r.mapsUrl||`https://www.google.com/maps/search/${encodeURIComponent(r.name+' '+city.name+' Japan')}`,
+    }));
+    setStatus('✅ '+allRests.length+' restaurants found in '+city.name);
+    setTimeout(()=>setStatus(''),3000);
+    renderCards();
+  }catch(err){
+    showError(err.message||'Search failed. Please try again.');
+  }
+}
+
+function renderPhrases(){
+  document.getElementById('phrases-list').innerHTML=PHRASES.map((p,i)=>`
+    <div class="pcard ${p.priority?'priority':''}" id="pc-${i}" onclick="togglePhrase(${i})">
+      <div class="pcard-head">
+        <div class="pcard-left">
+          ${p.priority?'<span class="pcard-badge">⭐ Most Important</span>':''}
+          <span class="pcard-cat">${p.cat}</span>
+        </div>
+        <span class="pcard-arrow">›</span>
+      </div>
+      <div class="pcard-preview">${p.en}</div>
+      <div class="pcard-body">
+        <div class="pcard-jp">
+          <div class="pcard-jp-lbl">Japanese — Show to restaurant staff</div>
+          <div class="pcard-jp-text">${p.jp}</div>
+          <div class="pcard-copy-row"><button class="copy-btn" id="cpb-${i}" onclick="copyPhrase(event,${i})">Copy Japanese</button></div>
+        </div>
+        <div class="pcard-box"><div class="pcard-box-lbl">Pronunciation (Romaji)</div><div class="pcard-romaji">${p.rm}</div></div>
+        <div class="pcard-box eng"><div class="pcard-box-lbl">English Meaning</div><div class="pcard-eng">${p.en}</div></div>
+      </div>
+    </div>`).join('');
+  togglePhrase(0);
+}
+function togglePhrase(i){document.getElementById('pc-'+i).classList.toggle('open');}
+function copyPhrase(e,i){
+  e.stopPropagation();
+  navigator.clipboard.writeText(PHRASES[i].jp).then(()=>{
+    const b=document.getElementById('cpb-'+i);
+    b.textContent='✓ Copied!';b.classList.add('done');
+    setTimeout(()=>{b.textContent='Copy Japanese';b.classList.remove('done');},2000);
+  });
+}
+
+renderCityGrid();
+renderPhrases();
+</script>
+</body>
+</html>
